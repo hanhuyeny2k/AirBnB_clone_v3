@@ -14,13 +14,12 @@ import json
 from models import storage
 
 
-
 @app_views.route('/states', methods=['GET'])
 def get_states():
-	items = []
-	for obj in storage.all(State).values():
-		items.append(obj.to_dict())
-	return str(items)
+        items = []
+        for obj in storage.all(State).values():
+                items.append(obj.to_dict())
+        return str(items)
 
 
 @app_views.route('/states/<state_id>', methods=['GET'])
@@ -44,7 +43,7 @@ def delete_state(state_id):
         return make_response(jsonify({}), 200)
 
 
-@app_views.route('/api/v1/states', methods=['POST'])
+@app_views.route('/states', methods=['POST'], strict_slashes=False)
 def post_state():
     data = request.get_json()
     if data is None:
@@ -53,6 +52,6 @@ def post_state():
         if "name" not in data.keys():
             abort(400, "Missing name")
         else:
-            req = make_response(jsonify(data))
-            newstate = State(**req)
-            return newstate, 200
+            newstate = State(**data)
+            newstate.save()
+            return jsonify(newstate.to_dict()), 201
