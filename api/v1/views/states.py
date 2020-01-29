@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+""" Create a new view for State objects that handles all default RestFul API"""
 
 from flask import Flask, request
 from models.amenity import Amenity
@@ -14,16 +15,18 @@ import json
 from models import storage
 
 
-@app_views.route('/states', methods=['GET'])
+@app_views.route('/states', methods=['GET'], strict_slashes=False)
 def get_states():
-        items = []
-        for obj in storage.all(State).values():
-                items.append(obj.to_dict())
-        return str(items)
+    """ Retrieves the list of all City objects of a State """
+    items = []
+    for obj in storage.all(State).values():
+        items.append(obj.to_dict())
+    return str(items)
 
 
-@app_views.route('/states/<state_id>', methods=['GET'])
+@app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get_state(state_id):
+    """ Retrieves a City object """
     obj = storage.get("State", state_id)
     if obj is None:
         abort(404)
@@ -32,8 +35,10 @@ def get_state(state_id):
         return (str(ret))
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'])
+@app_views.route(
+        '/states/<state_id>', methods=['DELETE'], strict_slashes=False)
 def delete_state(state_id):
+    """ Delete a City object """
     obj = storage.get("State", state_id)
     if obj is None:
         abort(404)
@@ -45,6 +50,7 @@ def delete_state(state_id):
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def post_state():
+    """ Create a City """
     data = request.get_json()
     if data is None:
         abort(400, "Not a JSON")
@@ -59,16 +65,17 @@ def post_state():
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def put_state(state_id):
-        obj = storage.get("State", state_id)
-        if obj is None:
-                abort(404)
+    """ Updates a City object """
+    obj = storage.get("State", state_id)
+    if obj is None:
+        abort(404)
+    else:
+        data = request.get_json()
+        keys_to_exclude = set(('id', 'created_at', 'updated_at'))
+        dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
+        if data is None:
+            abort(400, "Not a JSON")
         else:
-            data = request.get_json()
-            keys_to_exclude = set(('id', 'created_at', 'updated_at'))
-            dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
-            if data is None:
-                    abort(400, "Not a JSON")
-            else:
-                    obj = obj.to_dict()
-                    obj.update(dict2)
-                    return jsonify(obj), 200
+            obj = obj.to_dict()
+            obj.update(dict2)
+            return jsonify(obj), 200
