@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from api.v1.views import app_views
 
 app = Flask(__name__)
-
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.register_blueprint(app_views)
 
 
