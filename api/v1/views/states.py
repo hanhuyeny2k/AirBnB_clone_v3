@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from flask import Flask
+from flask import Flask, request
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -42,3 +42,17 @@ def delete_state(state_id):
         storage.delete(obj)
         storage.save()
         return make_response(jsonify({}), 200)
+
+
+@app_views.route('/api/v1/states', methods=['POST'])
+def post_state():
+    data = request.get_json()
+    if data is None:
+        abort(400, "Not a JSON")
+    else:
+        if "name" not in data.keys():
+            abort(400, "Missing name")
+        else:
+            req = make_response(jsonify(data))
+            newstate = State(**req)
+            return newstate, 200
