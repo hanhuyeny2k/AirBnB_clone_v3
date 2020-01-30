@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+"""class for city http methods"""
 from flask import Flask, request
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
@@ -14,13 +14,15 @@ import json
 from models import storage
 
 
-@app_views.route('/states/<state_id>/cities', methods=['GET', 'POST'])
+@app_views.route('/states/<state_id>/cities',
+                 methods=['GET', 'POST'], strict_slashes=False)
 def get_cities_from_state(state_id):
         items = []
         if request.method == "GET":
-                for obj in storage.all(State).values():
-                        if obj.__class__.__name__ == 'City':
-                                items.append(obj.to_dict())
+                obj = storage.get("State", state_id)
+                for item in storage.all(City).values():
+                        if item.state_id == state_id:
+                                items.append(item.to_dict())
                 return jsonify(items)
         elif request.method == 'POST':
                 obj = storage.get("State", state_id)
@@ -32,12 +34,14 @@ def get_cities_from_state(state_id):
                 if "name" not in data.keys():
                         abort(400, "Missing name")
                 else:
+                        data['state_id'] = state_id
                         newcity = City(**data)
-                        newcity.save()
+                        storage.new(newcity)
+                        storage.save()
                 return jsonify(newcity.to_dict()), 201
 
 
-@app_views.route('/cities/<city_id>', methods=['GET'])
+@app_views.route('/cities/<city_id>', methods=['GET'], strict_slashes=False)
 def get_cities(city_id):
     obj = storage.get("City", city_id)
     if obj is None:
@@ -47,7 +51,7 @@ def get_cities(city_id):
         return (str(ret))
 
 
-@app_views.route('/cities/<city_id>', methods=['DELETE'])
+@app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
 def delete_city(city_id):
     obj = storage.get("City", city_id)
     if obj is None:
@@ -59,7 +63,7 @@ def delete_city(city_id):
 
 
 @app_views.route('/cities/<city_id>', methods=['PUT'], strict_slashes=False)
-def put_city(state_id):
+def put_city(city_id):
         obj = storage.get("City", city_id)
         if obj is None:
                 abort(404)
