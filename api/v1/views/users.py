@@ -55,8 +55,10 @@ def post_user():
     if data is None:
         abort(400, "Not a JSON")
     else:
-        if "name" not in data.keys():
-            abort(400, "Missing name")
+        if "email" not in data.keys():
+            abort(400, "Missing email")
+        if "password" not in data.keys():
+            abort(400, "Missing password")
         else:
             new_user = User(**data)
             storage.new(new_user)
@@ -73,7 +75,7 @@ def put_user(user_id):
         abort(404)
     else:
         data = request.get_json()
-        keys_to_exclude = set(('id', 'created_at', 'updated_at'))
+        keys_to_exclude = set(('id', 'email', 'created_at', 'updated_at'))
         dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
         if data is None:
             abort(400, "Not a JSON")

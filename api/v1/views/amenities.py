@@ -61,7 +61,7 @@ def post_amenity():
             new_amenity = Amenity(**data)
             new_amenity = new_amenity.to_dict()
             storage.save()
-            return jsonify(new_amenity), 201
+            return make_response(jsonify(new_amenity), 201)
 
 
 @app_views.route('/amenity/<amenity_id>',
@@ -80,4 +80,4 @@ def put_amenity(amenity_id):
         else:
             obj = obj.to_dict()
             obj.update(dict2)
-            return jsonify(obj), 200
+            return make_response(jsonify(obj), 200)
