@@ -20,6 +20,8 @@ def get_places(city_id):
     """ Retrieves the list of all Place objects in a city"""
     items = []
     city = storage.get("City", city_id)
+    if not city:
+        abort(404)
     for obj in storage.all(Place).values():
         if obj.city_id == city_id:
             items.append(obj.to_dict())
