@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""index for file"""
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -14,11 +15,13 @@ from models import storage
 
 @app_views.route('/status')
 def status():
-    return {"status": "OK"}
+    """return status of app"""
+    return jsonify({"status": "OK"})
 
 
 @app_views.route('/stats', methods=['GET'])
 def stats():
+    """return stats of objects"""
     return jsonify(amenities=storage.count(Amenity),
                    cities=storage.count(City),
                    places=storage.count(Place),
