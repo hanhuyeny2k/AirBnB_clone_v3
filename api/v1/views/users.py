@@ -82,4 +82,5 @@ def put_user(user_id):
         else:
             for k, v in dict2.items():
                 setattr(obj, k, v)
+            storage.save()
             return make_response(jsonify(obj.to_dict), 200)
