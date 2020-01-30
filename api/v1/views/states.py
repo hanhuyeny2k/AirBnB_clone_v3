@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """ Create a new view for State objects that handles all default RestFul API"""
-
 from flask import Flask, request
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
@@ -17,28 +16,28 @@ from models import storage
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
 def get_states():
-    """ Retrieves the list of all City objects of a State """
+    """ Retrieves the list of all States"""
     items = []
     for obj in storage.all(State).values():
         items.append(obj.to_dict())
-    return str(items)
+    return jsonify(items)
 
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get_state(state_id):
-    """ Retrieves a City object """
+    """ Retrieves a State object by id"""
     obj = storage.get("State", state_id)
     if obj is None:
         abort(404)
     else:
         ret = obj.to_dict()
-        return (str(ret))
+        return jsonify(ret)
 
 
 @app_views.route(
         '/states/<state_id>', methods=['DELETE'], strict_slashes=False)
 def delete_state(state_id):
-    """ Delete a City object """
+    """ Delete a State object """
     obj = storage.get("State", state_id)
     if obj is None:
         abort(404)
@@ -50,7 +49,7 @@ def delete_state(state_id):
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def post_state():
-    """ Create a City """
+    """ Create a State """
     data = request.get_json()
     if data is None:
         abort(400, "Not a JSON")
@@ -60,12 +59,12 @@ def post_state():
         else:
             newstate = State(**data)
             newstate.save()
-            return jsonify(newstate.to_dict()), 201
+            return make_response(jsonify(newstate.to_dict()), 201)
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def put_state(state_id):
-    """ Updates a City object """
+    """ Updates a State object """
     obj = storage.get("State", state_id)
     if obj is None:
         abort(404)
@@ -78,4 +77,5 @@ def put_state(state_id):
         else:
             obj = obj.to_dict()
             obj.update(dict2)
-            return jsonify(obj), 200
+            storage.save()
+            return make_response(jsonify(obj), 200)

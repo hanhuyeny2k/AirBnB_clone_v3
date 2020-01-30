@@ -39,7 +39,7 @@ def get_cities_from_state(state_id):
                         newcity = City(**data)
                         storage.new(newcity)
                         storage.save()
-                return jsonify(newcity.to_dict()), 201
+                return make_response(jsonify(newcity.to_dict()), 201)
 
 
 @app_views.route('/cities/<city_id>', methods=['GET'], strict_slashes=False)
@@ -50,7 +50,7 @@ def get_cities(city_id):
         abort(404)
     else:
         ret = obj.to_dict()
-        return (str(ret))
+        return jsonify(ret)
 
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'], strict_slashes=False)
@@ -80,4 +80,4 @@ def put_city(city_id):
             else:
                     obj = obj.to_dict()
                     obj.update(dict2)
-                    return jsonify(obj), 200
+                    return make_response(jsonify(obj), 200)
