@@ -80,6 +80,6 @@ def put_user(user_id):
         if data is None:
             abort(400, "Not a JSON")
         else:
-            obj = obj.to_dict()
-            obj.update(dict2)
-            return make_response(jsonify(obj), 200)
+            for k, v in dict2.items():
+                setattr(obj, k, v)
+            return make_response(jsonify(obj.to_dict), 200)

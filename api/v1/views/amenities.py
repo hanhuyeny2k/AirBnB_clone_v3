@@ -26,7 +26,7 @@ def get_amenities():
 @app_views.route('/amenities/<amenity_id>',
                  methods=['GET'], strict_slashes=False)
 def get_amenity(amenity_id):
-    """ Retrieves a City object """
+    """ Retrieves a Amenity object """
     obj = storage.get("Amenity", amenity_id)
     if obj is None:
         abort(404)
@@ -59,9 +59,9 @@ def post_amenity():
             abort(400, "Missing name")
         else:
             new_amenity = Amenity(**data)
-            new_amenity = new_amenity.to_dict()
+            storage.new(new_amenity)
             storage.save()
-            return make_response(jsonify(new_amenity), 201)
+            return make_response(jsonify(new_amenity.to_dict()), 201)
 
 
 @app_views.route('/amenity/<amenity_id>',
@@ -78,6 +78,7 @@ def put_amenity(amenity_id):
         if data is None:
             abort(400, "Not a JSON")
         else:
-            obj = obj.to_dict()
-            obj.update(dict2)
-            return make_response(jsonify(obj), 200)
+            for k, v in dict2.items():
+                setattr(obj, k, v)
+            storage.save()
+            return make_response(jsonify(obj.to_dict()), 200)

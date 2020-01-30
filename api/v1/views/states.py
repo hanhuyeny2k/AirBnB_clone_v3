@@ -58,6 +58,7 @@ def post_state():
             abort(400, "Missing name")
         else:
             newstate = State(**data)
+            storage.new(newstate)
             newstate.save()
             return make_response(jsonify(newstate.to_dict()), 201)
 
@@ -75,7 +76,7 @@ def put_state(state_id):
         if data is None:
             abort(400, "Not a JSON")
         else:
-            obj = obj.to_dict()
-            obj.update(dict2)
+            for k, v in dict2.items():
+                setattr(obj, k, v)
             storage.save()
-            return make_response(jsonify(obj), 200)
+            return make_response(jsonify(obj.to_dict()), 200)
