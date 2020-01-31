@@ -60,7 +60,7 @@ def post_state():
             newstate = State(**data)
             storage.new(newstate)
             newstate.save()
-            return jsonify(newstate.to_dict()), 201
+            return newstate.to_dict(), 201
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
@@ -79,4 +79,4 @@ def put_state(state_id):
             for k, v in dict2.items():
                 setattr(obj, k, v)
             storage.save()
-            return jsonify(obj.to_dict()), 200
+            return obj.to_dict(), 200
