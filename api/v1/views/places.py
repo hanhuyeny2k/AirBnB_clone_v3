@@ -86,12 +86,11 @@ def put_place(place_id):
         data = request.get_json()
         keys_to_exclude = set((
             'id', 'user_id', 'city_id', 'created_at', 'updated_at'))
-        dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
         if data is None:
             abort(400, "Not a JSON")
-        else:
-            for k, v in dict2.items():
-                setattr(obj, k, v)
-            storage.save()
-            obj = obj.to_dict()
-            return make_response(jsonify(obj), 200)
+        dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
+        for k, v in dict2.items():
+            setattr(obj, k, v)
+        storage.save()
+        obj = obj.to_dict()
+        return make_response(jsonify(obj), 200)
