@@ -55,13 +55,13 @@ def delete_review(review_id):
 
 @app_views.route('/places/<place_id>/reviews',
                  methods=['POST'], strict_slashes=False)
-def post_review(review_id):
+def post_review(place_id):
     """ Create a Review"""
     data = request.get_json()
     if data is None:
         abort(400, "Not a JSON")
     else:
-        test_place = storage.get("Place", data['place_id'])
+        test_place = storage.get("Place", place_id)
         if not test_place:
             abort(404)
         if "user_id" not in data.keys():
