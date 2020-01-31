@@ -52,10 +52,10 @@ def post_state():
     """ Create a State """
     data = request.get_json()
     if data is None:
-        abort(400, "Not a JSON")
+        abort(make_response("Not a JSON", 400))
     else:
         if "name" not in data.keys():
-            abort(400, "Missing name")
+            abort(make_response("Missing name", 400))
         else:
             newstate = State(**data)
             storage.new(newstate)
@@ -74,7 +74,7 @@ def put_state(state_id):
         keys_to_exclude = set(('id', 'created_at', 'updated_at'))
         dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
         if data is None:
-            abort(400, "Not a JSON")
+            abort(make_response("Not a JSON", 400))
         else:
             for k, v in dict2.items():
                 setattr(obj, k, v)
