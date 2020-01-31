@@ -18,7 +18,7 @@ from models import storage
 def get_states():
     """ Retrieves the list of all States"""
     items = []
-    for obj in storage.all(State).values():
+    for obj in storage.all('State').values():
         items.append(obj.to_dict())
     return jsonify(items)
 
