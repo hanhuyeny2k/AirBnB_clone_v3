@@ -22,7 +22,7 @@ def get_reviews(place_id):
     place = storage.get("Place", place_id)
     if not place:
         abort(404)
-    for obj in storage.all(Place).values():
+    for obj in storage.all(Review).values():
         if obj.place_id == place_id:
             items.append(obj.to_dict())
     return jsonify(items)
@@ -30,7 +30,7 @@ def get_reviews(place_id):
 
 @app_views.route('/reviews/<review_id>',
                  methods=['GET'], strict_slashes=False)
-def get_review(place_id):
+def get_review(review_id):
     """ Retrieves a Review object """
     obj = storage.get("Review", review_id)
     if obj is None:
@@ -42,8 +42,8 @@ def get_review(place_id):
 
 @app_views.route(
         '/reviews/<review_id>', methods=['DELETE'], strict_slashes=False)
-def delete_review(place_id):
-    """ Delete a place object"""
+def delete_review(review_id):
+    """ Delete a review object"""
     obj = storage.get("Review", review_id)
     if obj is None:
         abort(404)
@@ -55,16 +55,19 @@ def delete_review(place_id):
 
 @app_views.route('/places/<place_id>/reviews',
                  methods=['POST'], strict_slashes=False)
-def post_review(place_id):
-    """ Create a Reviews"""
+def post_review(review_id):
+    """ Create a Review"""
     data = request.get_json()
     if data is None:
         abort(400, "Not a JSON")
     else:
+        test_place = storage.get("Place", data['place_id'])
+        if not test_place:
+            abort(404)
         if "user_id" not in data.keys():
             abort(400, "Missing user_id")
-        test = storage.get("User", data['user_id'])
-        if not test:
+        test_user = storage.get("User", data['user_id'])
+        if not test_user:
             abort(404)
         if "text" not in data.keys():
             abort(400, "Missing text")
@@ -87,7 +90,7 @@ def put_review(review_id):
         keys_to_exclude = set((
             'id', 'user_id', 'place_id', 'created_at', 'updated_at'))
         dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
-        if data is None:
+        if not data:
             abort(400, "Not a JSON")
         else:
             for k, v in dict2.items():
