@@ -21,7 +21,7 @@ def get_cities_from_state(state_id):
         items = []
         if request.method == "GET":
                 obj = storage.get("State", state_id)
-                for item in obj.cities.values():
+                for item in storage.all(City).values():
                         if item.state_id == state_id:
                                 items.append(item.to_dict())
                 return jsonify(items)
