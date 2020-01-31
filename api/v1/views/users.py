@@ -76,11 +76,10 @@ def put_user(user_id):
     else:
         data = request.get_json()
         keys_to_exclude = set(('id', 'email', 'created_at', 'updated_at'))
-        dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
         if data is None:
             abort(400, "Not a JSON")
-        else:
-            for k, v in dict2.items():
-                setattr(obj, k, v)
-            storage.save()
-            return make_response(jsonify(obj.to_dict), 200)
+        dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
+        for k, v in dict2.items():
+            setattr(obj, k, v)
+        storage.save()
+        return make_response(jsonify(obj.to_dict), 200)
