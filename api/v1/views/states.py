@@ -58,6 +58,7 @@ def post_state():
             abort(400, "Missing name")
         else:
             newstate = State(**data)
+            storage.new(newstate)
             newstate.save()
             return make_response(jsonify(newstate.to_dict()), 201)
 
