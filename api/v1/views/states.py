@@ -72,11 +72,10 @@ def put_state(state_id):
     else:
         data = request.get_json()
         keys_to_exclude = set(('id', 'created_at', 'updated_at'))
-        dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
         if data is None:
             abort(make_response("Not a JSON", 400))
-        else:
-            for k, v in dict2.items():
-                setattr(obj, k, v)
-            storage.save()
-            return jsonify(obj.to_dict()), 200
+        dict2 = {k: v for k, v in data.items() if k not in keys_to_exclude}
+        for k, v in dict2.items():
+            setattr(obj, k, v)
+        storage.save()
+        return jsonify(obj.to_dict()), 200
