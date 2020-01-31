@@ -18,7 +18,7 @@ from models import storage
 def get_states():
     """ Retrieves the list of all States"""
     items = []
-    for obj in storage.all('State').values():
+    for obj in storage.all(State).values():
         items.append(obj.to_dict())
     return jsonify(items)
 
@@ -44,7 +44,7 @@ def delete_state(state_id):
     else:
         storage.delete(obj)
         storage.save()
-        return make_response({}, 200)
+        return {}, 200
 
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
@@ -60,7 +60,7 @@ def post_state():
             newstate = State(**data)
             storage.new(newstate)
             newstate.save()
-            return make_response(jsonify(newstate.to_dict()), 201)
+            return jsonify(newstate.to_dict()), 201
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
@@ -79,4 +79,4 @@ def put_state(state_id):
             for k, v in dict2.items():
                 setattr(obj, k, v)
             storage.save()
-            return make_response(jsonify(obj.to_dict()), 200)
+            return jsonify(obj.to_dict()), 200
